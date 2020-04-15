@@ -15,24 +15,11 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;title must contain
 SetTitleMatchMode, 2
 
-;Run, thunderbird.exe
-;WinWait, ahk_exe vivaldi.exe
-;WinHide
+Menu,Tray,NoStandard 
+Menu,Tray,DeleteAll 
+Menu,Tray,Add,&Quit,ExitSub
 
-
-h_activeWinID := WinExist(" - Vivaldi")
-
-; get module full path (owner.exe)
-Win_Get(h_activeWinID, "M", tmpOwner )
-SplitPath, tmpOwner, , tmpDir, , tmpNameNoEx
-
-; use first icon from owner.exe of window
-h_appExeIcon = 1
-h_appExe = %tmpOwner%
-
-f_ShowTrayIcon( h_appExe, h_appExeIcon )
-
-
+IconSet = 0
 
 OnExit, ExitSub
 
@@ -54,20 +41,46 @@ ProcessExist(Name){
 
 Loop
 {
-	If !ProcessExist("vivaldi.exe")
+	If ProcessExist("vivaldi.exe")
 	{
-		;ExitApp
-	}
-	
-	WinGet, winState, MinMax, ahk_exe vivaldi.exe
-	if (winState = -1) {
-		WinHide, - Vivaldi
+
+		if IconSet = 0
+		{
+			if WinExist(" - Vivaldi")
+			{
+				SetTrayIcon:
+				h_activeWinID := WinExist(" - Vivaldi")
+
+				; get module full path (owner.exe)
+				Win_Get(h_activeWinID, "M", tmpOwner )
+				SplitPath, tmpOwner, , tmpDir, , tmpNameNoEx
+
+				; use first icon from owner.exe of window
+				h_appExeIcon = 1
+				h_appExe = %tmpOwner%
+
+				f_ShowTrayIcon( h_appExe, h_appExeIcon )
+				IconSet = 1
+
+				;MsgBox % "set tray icon: " . h_appExe . " WinID: " . h_activeWinID
+			}
+
+		}
+
+		
+
+		WinGet, winState, MinMax, ahk_exe vivaldi.exe
+		if (winState = -1) {
+			WinHide, - Vivaldi
+		}
 	}
    
 	sleep 500
 }
 
 ExitSub:
+	WinShow, - Vivaldi
+	WinRestore, - Vivaldi
 ExitApp
 
 
