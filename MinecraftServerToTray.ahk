@@ -1,4 +1,4 @@
-;MinVivaldiToTray
+;MinecraftServerToTray
 
 ;Credit to ThunderTray for the simple starting point:
 ;https://github.com/cryptogeek/ThunderTray/blob/master/ThunderTray.ahk
@@ -29,8 +29,8 @@ AHK_NOTIFYICON(wParam, lParam)
 {
     if (lParam = 0x202) ; WM_LBUTTONUP
 	{
-		WinShow, - Vivaldi
-		WinRestore, - Vivaldi
+		WinShow, Minecraft server console window
+		WinRestore, Minecraft server console window
 	}
 }
 
@@ -41,46 +41,27 @@ ProcessExist(Name){
 
 Loop
 {
-	If ProcessExist("vivaldi.exe")
+	If ProcessExist("Minecraft server console window")
 	{
-
-		if IconSet = 0
-		{
-			if WinExist(" - Vivaldi")
-			{
-				SetTrayIcon:
-				h_activeWinID := WinExist(" - Vivaldi")
-
-				; get module full path (owner.exe)
-				Win_Get(h_activeWinID, "M", tmpOwner )
-				SplitPath, tmpOwner, , tmpDir, , tmpNameNoEx
-
-				; use first icon from owner.exe of window
-				h_appExeIcon = 1
-				h_appExe = %tmpOwner%
-
-				f_ShowTrayIcon( h_appExe, h_appExeIcon )
-				IconSet = 1
-
-				;MsgBox % "set tray icon: " . h_appExe . " WinID: " . h_activeWinID
-			}
-
-		}
-
-		
-
 		WinGet, winState, MinMax, ahk_exe vivaldi.exe
 		if (winState = -1) {
-			WinHide, - Vivaldi
+			WinHide, Minecraft server console window
 		}
 	}
    
+
+	WinGet MMX, MinMax, Minecraft server console window
+	If MMX = -1		;-1 means its minimized
+	{
+		WinHide, Minecraft server console window
+	}
+
 	sleep 500
 }
 
 ExitSub:
-	WinShow, - Vivaldi
-	WinRestore, - Vivaldi
+	WinShow, Minecraft server console window
+	WinRestore, Minecraft server console window
 ExitApp
 
 
